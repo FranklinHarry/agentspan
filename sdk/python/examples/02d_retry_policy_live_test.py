@@ -6,8 +6,7 @@ metadata API to confirm the TaskDef has the correct retryLogic.
 
 Prerequisites:
     - Agentspan server running (e.g. docker compose up)
-    - httpbin running at http://localhost:8081
-    - AGENTSPAN_SERVER_URL=http://localhost:8080/api
+    - AGENTSPAN_SERVER_URL=http://localhost:8080/api (or default 6767)
 """
 
 import json
@@ -20,23 +19,20 @@ from settings import settings
 
 @tool(retry_policy="fixed", retry_count=3, retry_delay_seconds=5)
 def fetch_fixed(name: str) -> dict:
-    """Call httpbin with FIXED retry policy."""
-    url = f"http://host.docker.internal:8081/api/hello?name={name}"
-    return json.loads(urllib.request.urlopen(url).read())
+    """Dummy tool with FIXED retry policy."""
+    return {"greeting": f"Hello {name}!"}
 
 
 @tool(retry_policy="exponential_backoff", retry_count=5, retry_delay_seconds=1)
 def fetch_exponential(name: str) -> dict:
-    """Call httpbin with EXPONENTIAL_BACKOFF retry policy."""
-    url = f"http://host.docker.internal:8081/api/hello?name={name}"
-    return json.loads(urllib.request.urlopen(url).read())
+    """Dummy tool with EXPONENTIAL_BACKOFF retry policy."""
+    return {"greeting": f"Hi {name}!"}
 
 
 @tool(retry_policy="linear_backoff", retry_count=2, retry_delay_seconds=3)
 def fetch_linear(name: str) -> dict:
-    """Call httpbin with LINEAR_BACKOFF retry policy."""
-    url = f"http://host.docker.internal:8081/api/hello?name={name}"
-    return json.loads(urllib.request.urlopen(url).read())
+    """Dummy tool with LINEAR_BACKOFF retry policy."""
+    return {"greeting": f"Hey {name}!"}
 
 
 agent = Agent(
